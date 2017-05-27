@@ -1,0 +1,14 @@
+---
+title: "Perceptron"
+output: github_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+This chapter corresponds to "Perceptron" in the [original book](https://github.com/oreilly-japan/deep-learning-from-scratch).
+
+
