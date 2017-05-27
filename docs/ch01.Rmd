@@ -290,7 +290,7 @@ It is loaded as a 3d array of shape `(nrow, ncol, channel)`.
 To visualize image, we can use `grid.raster` from `grid` library.
 ```{r}
 library(png)
-img <- readPNG("dataset/lena.png")
+img <- readPNG("../dataset/lena.png")
 str(img)
 
 library(grid)
