@@ -1,5 +1,5 @@
 ---
-title: "Introduction to R and Python"
+title: "Introduction to R (with some remarks on difference from Python)"
 output: github_document
 ---
 
