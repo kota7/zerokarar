@@ -1,7 +1,9 @@
 # zerokarar
 Implementation of deep-learning-from-scratch in R
 
+** This is an inofficial self study repository **
+
 
 ## Links
 
-[Original repository](https://github.com/oreilly-japan/deep-learning-from-scratch)
+[Official book repository](https://github.com/oreilly-japan/deep-learning-from-scratch)
