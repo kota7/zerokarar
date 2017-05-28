@@ -297,7 +297,7 @@ softmax(a)
 rowSums(softmax(a))
 ```
 
-Also, prediction function needs to revised due to the broadcasting rule of R.
+Also, prediction function needs to be revised due to the broadcasting rule of R.
 ```{r}
 prediction <- function(network, x)
 {
