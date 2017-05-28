@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 
-This chapter corresponds to "Introruction to Python" in the [original book](https://github.com/oreilly-japan/deep-learning-from-scratch).
+This chapter corresponds to Cahpter 1, "Introruction to Python" in the [original book](https://github.com/oreilly-japan/deep-learning-from-scratch).
 
 
 ## Data types
@@ -67,7 +67,7 @@ a
 
 ## Dictionary, and hash table
 
-Vectors of lists can have names, with which we can use them like a dictionary.
+Vectors and lists can have names, with which we can use them like a dictionary.
 
 ```{r}
 ## Vector 
@@ -78,8 +78,8 @@ me
 
 ## List 
 me <- list(height = 180)
-me[["height"]]
-me[["weight"]] <- 70
+me$height
+me$weight <- 70
 me
 ```
 
@@ -290,14 +290,14 @@ It is loaded as a 3d array of shape `(nrow, ncol, channel)`.
 To visualize image, we can use `grid.raster` from `grid` library.
 ```{r}
 library(png)
-img <- readPNG("../dataset/lena.png")
+img <- readPNG("dataset/lena.png")
 str(img)
 
 library(grid)
 grid.raster(img)
 ```
 
-`grid.raster` does not return graphic object.  To use image plot as if it is a `ggplot` objects, we will use the following custom function.
+`grid.raster` does not return graphic object.  To use image plot as if it is a `ggplot` object, we will use the following custom function.
 
 ```{r}
 image_plot <- function(arr)

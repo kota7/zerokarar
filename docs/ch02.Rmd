@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-This chapter corresponds to "Perceptron" in the [original book](https://github.com/oreilly-japan/deep-learning-from-scratch).
+This chapter corresponds to Chapter 2, "Perceptron" in the [original book](https://github.com/oreilly-japan/deep-learning-from-scratch).
 
 
 ```{r}

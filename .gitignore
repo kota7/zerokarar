@@ -1,3 +1,6 @@
+mnist-raw
+mnist.rds
+
 .Rproj.user
 .Rhistory
 .RData
