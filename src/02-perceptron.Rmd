@@ -1,0 +1,50 @@
+# Perceptron
+
+
+
+This chapter corresponds to Chapter 2, "Perceptron" in the [original book](https://github.com/oreilly-japan/deep-learning-from-scratch).
+
+
+```{r}
+AND <- function(x1, x2)
+{
+  w1 <- 0.5
+  w2 <- 0.5
+  b <- -0.7
+  tmp <- x1*w1 + x2*w2 + b
+  if (tmp <= 0) 0 else 1
+}
+cat(AND(0,0), AND(1,0), AND(0,1), AND(1,1), "\n")
+
+NAND <- function(x1, x2)
+{
+  w1 <- -0.5
+  w2 <- -0.5
+  b <- 0.7
+  tmp <- x1*w1 + x2*w2 + b
+  if (tmp <= 0) 0 else 1
+}
+cat(NAND(0,0), NAND(1,0), NAND(0,1), NAND(1,1), "\n")
+
+OR <- function(x1, x2)
+{
+  w1 <- 0.5
+  w2 <- 0.5
+  b <- -0.2
+  tmp <- x1*w1 + x2*w2 + b
+  if (tmp <= 0) 0 else 1
+
+}
+cat(OR(0,0), OR(1,0), OR(0,1), OR(1,1), "\n")
+```
+
+
+```{r}
+XOR <- function(x1, x2)
+{
+  s1 <- NAND(x1, x2)
+  s2 <- OR(x1, x2)
+  AND(s1, s2)
+}
+cat(XOR(0,0), XOR(1,0), XOR(0,1), XOR(1,1), "\n")
+```

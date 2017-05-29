@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Deep Learning from Scratch in R</title>
+  <meta name="description" content="Deep Learning from Scratch in R">
+  <meta name="generator" content="bookdown 0.4 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Deep Learning from Scratch in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Deep Learning from Scratch in R" />
+  
+  
+  
+
+<meta name="author" content="Kota Mori">
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="index.html">
+<link rel="next" href="perceptron.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="introduction-to-r-and-some-remarks-on-differences-from-python.html"><a href="introduction-to-r-and-some-remarks-on-differences-from-python.html"><i class="fa fa-check"></i><b>1</b> Introduction to R, and some remarks on differences from Python</a><ul>
+<li class="chapter" data-level="1.1" data-path="introduction-to-r-and-some-remarks-on-differences-from-python.html"><a href="introduction-to-r-and-some-remarks-on-differences-from-python.html#data-types"><i class="fa fa-check"></i><b>1.1</b> Data types</a></li>
+<li class="chapter" data-level="1.2" data-path="introduction-to-r-and-some-remarks-on-differences-from-python.html"><a href="introduction-to-r-and-some-remarks-on-differences-from-python.html#variables"><i class="fa fa-check"></i><b>1.2</b> Variables</a></li>
+<li class="chapter" data-level="1.3" data-path="introduction-to-r-and-some-remarks-on-differences-from-python.html"><a href="introduction-to-r-and-some-remarks-on-differences-from-python.html#list-and-vectors"><i class="fa fa-check"></i><b>1.3</b> List and vectors</a></li>
+<li class="chapter" data-level="1.4" data-path="introduction-to-r-and-some-remarks-on-differences-from-python.html"><a href="introduction-to-r-and-some-remarks-on-differences-from-python.html#dictionary-and-hash-table"><i class="fa fa-check"></i><b>1.4</b> Dictionary, and hash table</a></li>
+<li class="chapter" data-level="1.5" data-path="introduction-to-r-and-some-remarks-on-differences-from-python.html"><a href="introduction-to-r-and-some-remarks-on-differences-from-python.html#boolean-or-logicals"><i class="fa fa-check"></i><b>1.5</b> Boolean or logicals</a></li>
+<li class="chapter" data-level="1.6" data-path="introduction-to-r-and-some-remarks-on-differences-from-python.html"><a href="introduction-to-r-and-some-remarks-on-differences-from-python.html#if-statement"><i class="fa fa-check"></i><b>1.6</b> If-statement</a></li>
+<li class="chapter" data-level="1.7" data-path="introduction-to-r-and-some-remarks-on-differences-from-python.html"><a href="introduction-to-r-and-some-remarks-on-differences-from-python.html#for-loop"><i class="fa fa-check"></i><b>1.7</b> For loop</a></li>
+<li class="chapter" data-level="1.8" data-path="introduction-to-r-and-some-remarks-on-differences-from-python.html"><a href="introduction-to-r-and-some-remarks-on-differences-from-python.html#functions"><i class="fa fa-check"></i><b>1.8</b> Functions</a></li>
+<li class="chapter" data-level="1.9" data-path="introduction-to-r-and-some-remarks-on-differences-from-python.html"><a href="introduction-to-r-and-some-remarks-on-differences-from-python.html#script-file"><i class="fa fa-check"></i><b>1.9</b> Script File</a></li>
+<li class="chapter" data-level="1.10" data-path="introduction-to-r-and-some-remarks-on-differences-from-python.html"><a href="introduction-to-r-and-some-remarks-on-differences-from-python.html#class"><i class="fa fa-check"></i><b>1.10</b> Class</a></li>
+<li class="chapter" data-level="1.11" data-path="introduction-to-r-and-some-remarks-on-differences-from-python.html"><a href="introduction-to-r-and-some-remarks-on-differences-from-python.html#matrix-and-array"><i class="fa fa-check"></i><b>1.11</b> Matrix and array</a></li>
+<li class="chapter" data-level="1.12" data-path="introduction-to-r-and-some-remarks-on-differences-from-python.html"><a href="introduction-to-r-and-some-remarks-on-differences-from-python.html#broadcast"><i class="fa fa-check"></i><b>1.12</b> Broadcast</a></li>
+<li class="chapter" data-level="1.13" data-path="introduction-to-r-and-some-remarks-on-differences-from-python.html"><a href="introduction-to-r-and-some-remarks-on-differences-from-python.html#array"><i class="fa fa-check"></i><b>1.13</b> Array</a></li>
+<li class="chapter" data-level="1.14" data-path="introduction-to-r-and-some-remarks-on-differences-from-python.html"><a href="introduction-to-r-and-some-remarks-on-differences-from-python.html#access-matrixarray-elements"><i class="fa fa-check"></i><b>1.14</b> Access matrix/array elements</a></li>
+<li class="chapter" data-level="1.15" data-path="introduction-to-r-and-some-remarks-on-differences-from-python.html"><a href="introduction-to-r-and-some-remarks-on-differences-from-python.html#plot"><i class="fa fa-check"></i><b>1.15</b> Plot</a></li>
+<li class="chapter" data-level="1.16" data-path="introduction-to-r-and-some-remarks-on-differences-from-python.html"><a href="introduction-to-r-and-some-remarks-on-differences-from-python.html#image-plot"><i class="fa fa-check"></i><b>1.16</b> Image plot</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="perceptron.html"><a href="perceptron.html"><i class="fa fa-check"></i><b>2</b> Perceptron</a></li>
+<li class="chapter" data-level="3" data-path="neural-network.html"><a href="neural-network.html"><i class="fa fa-check"></i><b>3</b> Neural Network</a><ul>
+<li class="chapter" data-level="3.1" data-path="neural-network.html"><a href="neural-network.html#activation-functions"><i class="fa fa-check"></i><b>3.1</b> Activation functions</a><ul>
+<li class="chapter" data-level="3.1.1" data-path="neural-network.html"><a href="neural-network.html#step-function"><i class="fa fa-check"></i><b>3.1.1</b> Step function</a></li>
+<li class="chapter" data-level="3.1.2" data-path="neural-network.html"><a href="neural-network.html#sigmoid-function"><i class="fa fa-check"></i><b>3.1.2</b> Sigmoid function</a></li>
+<li class="chapter" data-level="3.1.3" data-path="neural-network.html"><a href="neural-network.html#rectified-linear-unit-relu"><i class="fa fa-check"></i><b>3.1.3</b> Rectified Linear Unit (ReLU)</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="neural-network.html"><a href="neural-network.html#array-manipulation"><i class="fa fa-check"></i><b>3.2</b> Array manipulation</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="neural-network.html"><a href="neural-network.html#dot-product"><i class="fa fa-check"></i><b>3.2.1</b> Dot product</a></li>
+<li class="chapter" data-level="3.2.2" data-path="neural-network.html"><a href="neural-network.html#dot-products-in-neural-network"><i class="fa fa-check"></i><b>3.2.2</b> Dot products in neural network</a></li>
+<li class="chapter" data-level="3.2.3" data-path="neural-network.html"><a href="neural-network.html#implementing-3-layer-neural-network"><i class="fa fa-check"></i><b>3.2.3</b> Implementing 3-layer neural network</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="neural-network.html"><a href="neural-network.html#output-layer"><i class="fa fa-check"></i><b>3.3</b> Output layer</a></li>
+<li class="chapter" data-level="3.4" data-path="neural-network.html"><a href="neural-network.html#mnist"><i class="fa fa-check"></i><b>3.4</b> MNIST</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="neural-network.html"><a href="neural-network.html#convert-pickled-sample-weights-to-r-data"><i class="fa fa-check"></i><b>3.4.1</b> Convert pickled sample weights to R data</a></li>
+<li class="chapter" data-level="3.4.2" data-path="neural-network.html"><a href="neural-network.html#prediction-with-sample-network-weights"><i class="fa fa-check"></i><b>3.4.2</b> Prediction with sample network weights</a></li>
+</ul></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Deep Learning from Scratch in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="introduction-to-r-and-some-remarks-on-differences-from-python" class="section level1">
+<h1><span class="header-section-number">1</span> Introduction to R, and some remarks on differences from Python</h1>
+<p>This chapter corresponds to Cahpter 1, “Introruction to Python” in the <a href="https://github.com/oreilly-japan/deep-learning-from-scratch">original book</a>.</p>
+<div id="data-types" class="section level2">
+<h2><span class="header-section-number">1.1</span> Data types</h2>
+<p>We will use <code>class</code> function to know the variable types. Notice that type of <code>10</code> is <code>numeric</code> not <code>integer</code>. Append <code>L</code> to make it treated as an integer.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(<span class="dv">10</span>)</code></pre></div>
+<pre><code>## [1] &quot;numeric&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(10L)</code></pre></div>
+<pre><code>## [1] &quot;integer&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(<span class="fl">2.718</span>)</code></pre></div>
+<pre><code>## [1] &quot;numeric&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(<span class="st">&quot;hello&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;character&quot;</code></pre>
+</div>
+<div id="variables" class="section level2">
+<h2><span class="header-section-number">1.2</span> Variables</h2>
+<p>Like Python, R also supports dynamic typing.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span>100L
+y &lt;-<span class="st"> </span><span class="fl">3.14</span>
+x*y</code></pre></div>
+<pre><code>## [1] 314</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(x*y)</code></pre></div>
+<pre><code>## [1] &quot;numeric&quot;</code></pre>
+</div>
+<div id="list-and-vectors" class="section level2">
+<h2><span class="header-section-number">1.3</span> List and vectors</h2>
+<p>For basic types such as numeric and character, we can make a vector by <code>c</code> function. R uses one-base indexing (index starts with 1, not 0).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>)
+a</code></pre></div>
+<pre><code>## [1] 1 2 3 4 5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">length</span>(a)</code></pre></div>
+<pre><code>## [1] 5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a[<span class="dv">1</span>]</code></pre></div>
+<pre><code>## [1] 1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a[<span class="dv">5</span>]</code></pre></div>
+<pre><code>## [1] 5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a[<span class="dv">5</span>] &lt;-<span class="st"> </span><span class="dv">99</span>
+a</code></pre></div>
+<pre><code>## [1]  1  2  3  4 99</code></pre>
+<p>What is more similar to python’s list would be <code>list</code>, since it can have different types of elements. Use <code>[[</code> to access list elements.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>)
+a</code></pre></div>
+<pre><code>## [[1]]
+## [1] 1
+## 
+## [[2]]
+## [1] 2
+## 
+## [[3]]
+## [1] 3
+## 
+## [[4]]
+## [1] 4
+## 
+## [[5]]
+## [1] 5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">length</span>(a)</code></pre></div>
+<pre><code>## [1] 5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a[[<span class="dv">1</span>]]</code></pre></div>
+<pre><code>## [1] 1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a[[<span class="dv">5</span>]]</code></pre></div>
+<pre><code>## [1] 5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a[[<span class="dv">5</span>]] &lt;-<span class="st"> </span><span class="dv">99</span>
+a</code></pre></div>
+<pre><code>## [[1]]
+## [1] 1
+## 
+## [[2]]
+## [1] 2
+## 
+## [[3]]
+## [1] 3
+## 
+## [[4]]
+## [1] 4
+## 
+## [[5]]
+## [1] 99</code></pre>
+</div>
+<div id="dictionary-and-hash-table" class="section level2">
+<h2><span class="header-section-number">1.4</span> Dictionary, and hash table</h2>
+<p>Vectors and lists can have names, with which we can use them like a dictionary.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Vector 
+me &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dt">height =</span> <span class="dv">180</span>)
+me[<span class="st">&quot;height&quot;</span>]</code></pre></div>
+<pre><code>## height 
+##    180</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">me[<span class="st">&quot;weight&quot;</span>] &lt;-<span class="st"> </span><span class="dv">70</span>
+me</code></pre></div>
+<pre><code>## height weight 
+##    180     70</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## List 
+me &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">height =</span> <span class="dv">180</span>)
+me$height</code></pre></div>
+<pre><code>## [1] 180</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">me$weight &lt;-<span class="st"> </span><span class="dv">70</span>
+me</code></pre></div>
+<pre><code>## $height
+## [1] 180
+## 
+## $weight
+## [1] 70</code></pre>
+<p>Alternatively, we can use <code>hash</code> function from <code>hash</code> library.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(hash)</code></pre></div>
+<pre><code>## hash-2.2.6 provided by Decision Patterns</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">me &lt;-<span class="st"> </span><span class="kw">hash</span>(<span class="dt">height =</span> <span class="dv">180</span>)
+me$height</code></pre></div>
+<pre><code>## $height
+## [1] 180</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">me$weight &lt;-<span class="st"> </span><span class="dv">70</span>
+me</code></pre></div>
+<pre><code>## &lt;hash&gt; containing 2 key-value pair(s).
+##   height : 180
+##   weight : 70</code></pre>
+</div>
+<div id="boolean-or-logicals" class="section level2">
+<h2><span class="header-section-number">1.5</span> Boolean or logicals</h2>
+<p>In R, boolean variables called <code>logical</code> and have values <code>TRUE</code> or <code>FALSE</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hungry &lt;-<span class="st"> </span><span class="ot">TRUE</span>
+sleepy &lt;-<span class="st"> </span><span class="ot">FALSE</span>
+<span class="kw">class</span>(hungry)</code></pre></div>
+<pre><code>## [1] &quot;logical&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">!hungry</code></pre></div>
+<pre><code>## [1] FALSE</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hungry &amp;<span class="st"> </span>sleepy</code></pre></div>
+<pre><code>## [1] FALSE</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hungry |<span class="st"> </span>sleepy</code></pre></div>
+<pre><code>## [1] TRUE</code></pre>
+</div>
+<div id="if-statement" class="section level2">
+<h2><span class="header-section-number">1.6</span> If-statement</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hungry &lt;-<span class="st"> </span><span class="ot">TRUE</span>
+if (hungry) <span class="kw">print</span>(<span class="st">&quot;I&#39;m hungry&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;I&#39;m hungry&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hungry &lt;-<span class="st"> </span><span class="ot">FALSE</span>
+if (hungry) {
+  <span class="kw">print</span>(<span class="st">&quot;I&#39;m hungry&quot;</span>)
+} else {
+  <span class="kw">print</span>(<span class="st">&quot;I&#39;m not hungry&quot;</span>)
+  <span class="kw">print</span>(<span class="st">&quot;I&#39;m sleepy&quot;</span>)
+}</code></pre></div>
+<pre><code>## [1] &quot;I&#39;m not hungry&quot;
+## [1] &quot;I&#39;m sleepy&quot;</code></pre>
+</div>
+<div id="for-loop" class="section level2">
+<h2><span class="header-section-number">1.7</span> For loop</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">for (i in <span class="dv">1</span>:<span class="dv">3</span>) <span class="kw">print</span>(i)</code></pre></div>
+<pre><code>## [1] 1
+## [1] 2
+## [1] 3</code></pre>
+</div>
+<div id="functions" class="section level2">
+<h2><span class="header-section-number">1.8</span> Functions</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hello &lt;-<span class="st"> </span>function()
+{
+  <span class="kw">print</span>(<span class="st">&quot;Hello World!&quot;</span>)
+}
+<span class="kw">hello</span>()</code></pre></div>
+<pre><code>## [1] &quot;Hello World!&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hello &lt;-<span class="st"> </span>function(object)
+{
+  <span class="kw">print</span>(<span class="kw">sprintf</span>(<span class="st">&quot;Hello %s!&quot;</span>, object))
+}
+<span class="kw">hello</span>(<span class="st">&quot;cat&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;Hello cat!&quot;</code></pre>
+</div>
+<div id="script-file" class="section level2">
+<h2><span class="header-section-number">1.9</span> Script File</h2>
+<p>To run a script file from R session, use <code>source</code> function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source</span>(<span class="st">&quot;hungry.R&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;I&#39;m hungry!&quot;</code></pre>
+<p>To run a script file from console, call <code>Rscript</code>.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">Rscript</span> hungry.R 
+[<span class="kw">1</span>] <span class="st">&quot;I&#39;m hungry!&quot;</span></code></pre></div>
+</div>
+<div id="class" class="section level2">
+<h2><span class="header-section-number">1.10</span> Class</h2>
+<p>R has various ways to define classes. In this exercise, we will use <a href="https://cran.r-project.org/web/packages/R6/vignettes/Introduction.html"><code>R6</code></a> implementation. See more about object oriented programming in R, see <a href="http://adv-r.had.co.nz/OO-essentials.html">Hadley’s Advanced R</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(R6)
+Man &lt;-<span class="st"> </span><span class="kw">R6Class</span>(
+  <span class="st">&quot;Man&quot;</span>,
+  <span class="dt">public =</span> <span class="kw">list</span>(
+    <span class="dt">name =</span> <span class="st">&quot;&quot;</span>,
+    <span class="dt">initialize =</span> function(name) { self$name &lt;-<span class="st"> </span>name },
+    <span class="dt">hello =</span> function() { <span class="kw">print</span>(<span class="kw">sprintf</span>(<span class="st">&quot;Hello %s!&quot;</span>, self$name))  },
+    <span class="dt">goodbye =</span> function()  { <span class="kw">print</span>(<span class="kw">sprintf</span>(<span class="st">&quot;Gooe-bye %s!&quot;</span>, self$name)) }
+  )
+)
+
+m &lt;-<span class="st"> </span>Man$<span class="kw">new</span>(<span class="st">&quot;David&quot;</span>)
+m$<span class="kw">hello</span>()</code></pre></div>
+<pre><code>## [1] &quot;Hello David!&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m$<span class="kw">goodbye</span>()</code></pre></div>
+<pre><code>## [1] &quot;Gooe-bye David!&quot;</code></pre>
+</div>
+<div id="matrix-and-array" class="section level2">
+<h2><span class="header-section-number">1.11</span> Matrix and array</h2>
+<p>What’s similar to numpy’s arrays in R is <code>vector</code> (1d), <code>matrix</code> (2d) and <code>array</code> (3d+).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>)
+y &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>)
+x+y</code></pre></div>
+<pre><code>## [1] 3 6 9</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x*y</code></pre></div>
+<pre><code>## [1]  2  8 18</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x/y</code></pre></div>
+<pre><code>## [1] 0.5 0.5 0.5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x/<span class="dv">2</span></code></pre></div>
+<pre><code>## [1] 0.5 1.0 1.5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">A &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>), <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">ncol=</span><span class="dv">2</span>, <span class="dt">byrow=</span><span class="ot">TRUE</span>)
+A</code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]    1    2
+## [2,]    3    4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(A)</code></pre></div>
+<pre><code>## [1] 2 2</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">B &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">6</span>), <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">ncol=</span><span class="dv">2</span>, <span class="dt">byrow=</span><span class="ot">TRUE</span>)
+A+B</code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]    4    2
+## [2,]    3   10</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">A*B</code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]    3    0
+## [2,]    0   24</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">A*<span class="dv">10</span></code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]   10   20
+## [2,]   30   40</code></pre>
+</div>
+<div id="broadcast" class="section level2">
+<h2><span class="header-section-number">1.12</span> Broadcast</h2>
+<p>R’s broadcast rule is the opposite of that of python.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">A &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>), <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">ncol=</span><span class="dv">2</span>, <span class="dt">byrow=</span><span class="ot">TRUE</span>)
+B &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">20</span>)
+A*B</code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]   10   20
+## [2,]   60   80</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># to reproduce the book&#39;s result,</span>
+A &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>), <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">ncol=</span><span class="dv">2</span>, <span class="dt">byrow=</span><span class="ot">FALSE</span>)
+B &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">20</span>)
+<span class="kw">t</span>(A*B)</code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]   10   40
+## [2,]   30   80</code></pre>
+</div>
+<div id="array" class="section level2">
+<h2><span class="header-section-number">1.13</span> Array</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">array</span>(<span class="dv">1</span>, <span class="dt">dim=</span><span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">3</span>,<span class="dv">2</span>))
+x</code></pre></div>
+<pre><code>## , , 1
+## 
+##      [,1] [,2] [,3]
+## [1,]    1    1    1
+## [2,]    1    1    1
+## [3,]    1    1    1
+## [4,]    1    1    1
+## 
+## , , 2
+## 
+##      [,1] [,2] [,3]
+## [1,]    1    1    1
+## [2,]    1    1    1
+## [3,]    1    1    1
+## [4,]    1    1    1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">y &lt;-<span class="st"> </span><span class="dv">1</span>:<span class="dv">8</span>
+x*y</code></pre></div>
+<pre><code>## , , 1
+## 
+##      [,1] [,2] [,3]
+## [1,]    1    5    1
+## [2,]    2    6    2
+## [3,]    3    7    3
+## [4,]    4    8    4
+## 
+## , , 2
+## 
+##      [,1] [,2] [,3]
+## [1,]    5    1    5
+## [2,]    6    2    6
+## [3,]    7    3    7
+## [4,]    8    4    8</code></pre>
+</div>
+<div id="access-matrixarray-elements" class="section level2">
+<h2><span class="header-section-number">1.14</span> Access matrix/array elements</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">51</span>,<span class="dv">55</span>,<span class="dv">14</span>,<span class="dv">19</span>,<span class="dv">0</span>,<span class="dv">4</span>), <span class="dt">nrow=</span><span class="dv">3</span>, <span class="dt">ncol=</span><span class="dv">2</span>, <span class="dt">byrow=</span><span class="ot">TRUE</span>)
+X</code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]   51   55
+## [2,]   14   19
+## [3,]    0    4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X[<span class="dv">1</span>,]</code></pre></div>
+<pre><code>## [1] 51 55</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X[<span class="dv">1</span>,<span class="dv">2</span>]</code></pre></div>
+<pre><code>## [1] 55</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">for (i in <span class="dv">1</span>:<span class="kw">nrow</span>(X)) <span class="kw">print</span>(X[i,])</code></pre></div>
+<pre><code>## [1] 51 55
+## [1] 14 19
+## [1] 0 4</code></pre>
+<p>Elements are tracked by “column” first way in R. So flattening behavior is different from Python.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(X) &lt;-<span class="st"> </span><span class="kw">prod</span>(<span class="kw">dim</span>(X))
+X</code></pre></div>
+<pre><code>## [1] 51 14  0 55 19  4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># to reproduce the book result,</span>
+X &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">51</span>,<span class="dv">55</span>,<span class="dv">14</span>,<span class="dv">19</span>,<span class="dv">0</span>,<span class="dv">4</span>), <span class="dt">nrow=</span><span class="dv">3</span>, <span class="dt">ncol=</span><span class="dv">2</span>, <span class="dt">byrow=</span><span class="ot">FALSE</span>)
+<span class="kw">dim</span>(X) &lt;-<span class="st"> </span><span class="kw">prod</span>(<span class="kw">dim</span>(X))
+X</code></pre></div>
+<pre><code>## [1] 51 55 14 19  0  4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span>)]</code></pre></div>
+<pre><code>## [1] 51 14  0</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X &gt;<span class="st"> </span><span class="dv">15</span></code></pre></div>
+<pre><code>## [1]  TRUE  TRUE FALSE  TRUE FALSE FALSE</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X[X &gt;<span class="st"> </span><span class="dv">15</span>]</code></pre></div>
+<pre><code>## [1] 51 55 19</code></pre>
+</div>
+<div id="plot" class="section level2">
+<h2><span class="header-section-number">1.15</span> Plot</h2>
+<p>R has various ways to visualize data. In this exercise, we will use <code>ggplot2</code> library.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)</code></pre></div>
+<pre><code>## Find out what&#39;s changed in ggplot2 at
+## http://github.com/tidyverse/ggplot2/releases.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">6</span>, <span class="fl">0.1</span>)
+y &lt;-<span class="st"> </span><span class="kw">sin</span>(x)
+<span class="kw">qplot</span>(x, y, <span class="dt">geom=</span><span class="st">&quot;line&quot;</span>)</code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">y1 &lt;-<span class="st"> </span><span class="kw">sin</span>(x)
+y2 &lt;-<span class="st"> </span><span class="kw">cos</span>(x)
+tmp &lt;-<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">data.frame</span>(<span class="dt">x=</span>x, <span class="dt">y=</span>y1, <span class="dt">func=</span><span class="st">&quot;sin&quot;</span>, <span class="dt">stringsAsFactors=</span><span class="ot">FALSE</span>),
+             <span class="kw">data.frame</span>(<span class="dt">x=</span>x, <span class="dt">y=</span>y2, <span class="dt">func=</span><span class="st">&quot;cos&quot;</span>, <span class="dt">stringsAsFactors=</span><span class="ot">FALSE</span>))
+<span class="kw">ggplot</span>(tmp, <span class="kw">aes</span>(x, y, <span class="dt">linetype=</span>func)) +<span class="st"> </span><span class="kw">geom_line</span>() +<span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;Sin &amp; Cos&quot;</span>)</code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-19-2.png" width="672" /></p>
+</div>
+<div id="image-plot" class="section level2">
+<h2><span class="header-section-number">1.16</span> Image plot</h2>
+<p>To read a png format image file, use <code>readPNG</code> from <code>png</code> library. It is loaded as a 3d array of shape <code>(nrow, ncol, channel)</code>. To visualize image, we can use <code>grid.raster</code> from <code>grid</code> library.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(png)
+img &lt;-<span class="st"> </span><span class="kw">readPNG</span>(<span class="st">&quot;dataset/lena.png&quot;</span>)
+<span class="kw">str</span>(img)</code></pre></div>
+<pre><code>##  num [1:256, 1:256, 1:3] 0.875 0.882 0.89 0.89 0.878 ...</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(grid)
+<span class="kw">grid.raster</span>(img)</code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<p><code>grid.raster</code> does not return graphic object. To use image plot as if it is a <code>ggplot</code> object, we will use the following custom function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">image_plot &lt;-<span class="st"> </span>function(arr)
+{
+  out &lt;-<span class="st"> </span>grid::<span class="kw">rasterGrob</span>(arr)
+
+  out &lt;-<span class="st"> </span>ggplot2::<span class="kw">qplot</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="dt">xlim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>)) +
+<span class="st">    </span>ggplot2::<span class="kw">theme_void</span>() +<span class="st"> </span>ggplot2::<span class="kw">xlab</span>(<span class="st">&#39;&#39;</span>) +<span class="st"> </span>ggplot2::<span class="kw">ylab</span>(<span class="st">&#39;&#39;</span>) +
+<span class="st">    </span>ggplot2::<span class="kw">annotation_custom</span>(out)
+
+  out
+}
+<span class="kw">image_plot</span>(img)</code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(<span class="kw">image_plot</span>(img))</code></pre></div>
+<pre><code>## [1] &quot;gg&quot;     &quot;ggplot&quot;</code></pre>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="perceptron.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,18 @@
+---
+title: "Deep Learning from Scratch in R"
+author: "Kota Mori"
+documentclass: book
+site: "bookdown::bookdown_site"
+output: 
+  bookdown::gitbook: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Preface {-}
+
+In this book we will implement [Deep Learing from Scratch](https://github.com/oreilly-japan/deep-learning-from-scratch) in R.
+
+This is an inofficial self-study project.

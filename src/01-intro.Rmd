@@ -1,0 +1,308 @@
+# Introduction to R, and some remarks on differences from Python
+
+
+
+This chapter corresponds to Cahpter 1, "Introruction to Python" in the [original book](https://github.com/oreilly-japan/deep-learning-from-scratch).
+
+
+## Data types
+
+We will use `class` function to know the variable types.
+Notice that type of `10` is `numeric` not `integer`.
+Append `L` to make it treated as an integer. 
+
+```{r}
+class(10)
+class(10L)
+class(2.718)
+class("hello")
+```
+
+## Variables 
+
+Like Python, R also supports dynamic typing.
+
+```{r}
+x <- 100L
+y <- 3.14
+x*y
+class(x*y)
+```
+
+## List and vectors
+
+For basic types such as numeric and character, we can make a vector by `c` function.
+R uses one-base indexing (index starts with 1, not 0).
+
+```{r}
+a <- c(1,2,3,4,5)
+a
+length(a)
+a[1]
+a[5]
+a[5] <- 99
+a
+```
+
+What is more similar to python's list would be `list`, since it can have different
+types of elements.
+Use `[[` to access list elements.
+```{r}
+a <- list(1,2,3,4,5)
+a
+length(a)
+a[[1]]
+a[[5]]
+a[[5]] <- 99
+a
+```
+
+
+## Dictionary, and hash table
+
+Vectors and lists can have names, with which we can use them like a dictionary.
+
+```{r}
+## Vector 
+me <- c(height = 180)
+me["height"]
+me["weight"] <- 70
+me
+
+## List 
+me <- list(height = 180)
+me$height
+me$weight <- 70
+me
+```
+
+Alternatively, we can use `hash` function from `hash` library.
+
+```{r}
+library(hash)
+me <- hash(height = 180)
+me$height
+me$weight <- 70
+me
+```
+
+
+
+## Boolean or logicals
+
+In R, boolean variables called `logical` and have values `TRUE` or `FALSE`.
+
+```{r}
+hungry <- TRUE
+sleepy <- FALSE
+class(hungry)
+!hungry
+hungry & sleepy
+hungry | sleepy
+```
+
+
+
+## If-statement
+
+```{r}
+hungry <- TRUE
+if (hungry) print("I'm hungry")
+hungry <- FALSE
+if (hungry) {
+  print("I'm hungry")
+} else {
+  print("I'm not hungry")
+  print("I'm sleepy")
+}
+```
+
+
+## For loop
+
+```{r}
+for (i in 1:3) print(i)
+```
+
+
+
+## Functions
+
+```{r}
+hello <- function()
+{
+  print("Hello World!")
+}
+hello()
+
+hello <- function(object)
+{
+  print(sprintf("Hello %s!", object))
+}
+hello("cat")
+```
+
+
+
+## Script File
+
+To run a script file from R session, use `source` function.
+
+```{r}
+source("hungry.R")
+```
+
+To run a script file from console, call `Rscript`.
+
+```bash
+$ Rscript hungry.R 
+[1] "I'm hungry!"
+```
+
+
+## Class
+
+R has various ways to define classes.   In this exercise, we will use [`R6`](https://cran.r-project.org/web/packages/R6/vignettes/Introduction.html) implementation.
+See more about object oriented programming in R, see [Hadley's Advanced R](http://adv-r.had.co.nz/OO-essentials.html).
+
+```{r}
+library(R6)
+Man <- R6Class(
+  "Man",
+  public = list(
+    name = "",
+    initialize = function(name) { self$name <- name },
+    hello = function() { print(sprintf("Hello %s!", self$name))  },
+    goodbye = function()  { print(sprintf("Gooe-bye %s!", self$name)) }
+  )
+)
+
+m <- Man$new("David")
+m$hello()
+m$goodbye()
+```
+
+
+## Matrix and array
+
+What's similar to numpy's arrays in R is `vector` (1d), `matrix` (2d) and `array` (3d+).
+
+```{r}
+x <- c(1,2,3)
+y <- c(2,4,6)
+x+y
+x*y
+x/y
+x/2
+```
+
+```{r}
+A <- matrix(c(1,2,3,4), nrow=2, ncol=2, byrow=TRUE)
+A
+dim(A)
+
+B <- matrix(c(3,0,0,6), nrow=2, ncol=2, byrow=TRUE)
+A+B
+A*B
+A*10
+```
+
+
+## Broadcast
+
+R's broadcast rule is the opposite of that of python.
+```{r}
+A <- matrix(c(1,2,3,4), nrow=2, ncol=2, byrow=TRUE)
+B <- c(10,20)
+A*B
+
+# to reproduce the book's result,
+A <- matrix(c(1,2,3,4), nrow=2, ncol=2, byrow=FALSE)
+B <- c(10,20)
+t(A*B)
+```
+
+
+## Array
+
+```{r}
+x <- array(1, dim=c(4,3,2))
+x
+y <- 1:8
+x*y
+```
+
+
+## Access matrix/array elements
+
+```{r}
+X <- matrix(c(51,55,14,19,0,4), nrow=3, ncol=2, byrow=TRUE)
+X
+X[1,]
+X[1,2]
+for (i in 1:nrow(X)) print(X[i,])
+```
+
+Elements are tracked by "column" first way in R.
+So flattening behavior is different from Python.
+```{r}
+dim(X) <- prod(dim(X))
+X
+
+# to reproduce the book result,
+X <- matrix(c(51,55,14,19,0,4), nrow=3, ncol=2, byrow=FALSE)
+dim(X) <- prod(dim(X))
+X
+X[c(1,3,5)]
+X > 15
+X[X > 15]
+```
+
+
+## Plot
+
+R has various ways to visualize data.  In this exercise, we will use `ggplot2` library.
+```{r}
+library(ggplot2)
+x <- seq(0, 6, 0.1)
+y <- sin(x)
+qplot(x, y, geom="line")
+
+y1 <- sin(x)
+y2 <- cos(x)
+tmp <- rbind(data.frame(x=x, y=y1, func="sin", stringsAsFactors=FALSE),
+             data.frame(x=x, y=y2, func="cos", stringsAsFactors=FALSE))
+ggplot(tmp, aes(x, y, linetype=func)) + geom_line() + ggtitle("Sin & Cos")
+```
+
+
+## Image plot
+
+To read a png format image file, use `readPNG` from `png` library.
+It is loaded as a 3d array of shape `(nrow, ncol, channel)`.
+To visualize image, we can use `grid.raster` from `grid` library.
+```{r}
+library(png)
+img <- readPNG("dataset/lena.png")
+str(img)
+
+library(grid)
+grid.raster(img)
+```
+
+`grid.raster` does not return graphic object.  To use image plot as if it is a `ggplot` object, we will use the following custom function.
+
+```{r}
+image_plot <- function(arr)
+{
+  out <- grid::rasterGrob(arr)
+
+  out <- ggplot2::qplot(0.5, 0.5, xlim=c(0,1), ylim=c(0,1)) +
+    ggplot2::theme_void() + ggplot2::xlab('') + ggplot2::ylab('') +
+    ggplot2::annotation_custom(out)
+
+  out
+}
+image_plot(img)
+class(image_plot(img))
+```
