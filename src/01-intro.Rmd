@@ -90,7 +90,7 @@ me
 
 ## Boolean or logicals
 
-In R, boolean variables called `logical` and have values `TRUE` or `FALSE`.
+In R, boolean variables are called `logical` and have values `TRUE` or `FALSE`.
 
 ```{r}
 hungry <- TRUE

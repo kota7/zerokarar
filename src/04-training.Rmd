@@ -1,0 +1,172 @@
+# Training Neural Network
+
+
+
+This chapter corresponds to Chapter 4, "Training Neural Network" in the [original book](https://github.com/oreilly-japan/deep-learning-from-scratch).
+
+
+## Loss functions
+
+Following implementation of loss functions allow for batch input.
+```{r}
+mean_squared_error <- function(p, y)
+{
+  # p: predicted value matrix (N, K)
+  # y: true value matrix (N, K)
+  if (is.vector(p)) dim(p) <- c(1, length(p))
+  if (is.vector(y)) dim(y) <- c(1, length(y))
+  
+  0.5*sum((p-y)^2)/nrow(p)
+}
+
+y <- c(0,0,1,0,0,0,0,0,0,0)
+p <- c(0.1, 0.05, 0.6, 0.0, 0.05, 0.1, 0.0, 0.1, 0.0, 0.0)
+mean_squared_error(p, y)
+
+p <- c(0.1, 0.05, 0.1, 0.0, 0.05, 0.1, 0.0, 0.6, 0.0, 0.0)
+mean_squared_error(p, y)
+```
+
+```{r}
+cross_entropy_error <- function(p, y)
+{
+  if (is.vector(p)) dim(p) <- c(1, length(p))
+  if (is.vector(y)) dim(y) <- c(1, length(y))
+  -sum(y * log(p + 1e-7)) / nrow(p)
+}
+y <- c(0,0,1,0,0,0,0,0,0,0)
+p <- c(0.1, 0.05, 0.6, 0.0, 0.05, 0.1, 0.0, 0.1, 0.0, 0.0)
+cross_entropy_error(p, y)
+
+p <- c(0.1, 0.05, 0.1, 0.0, 0.05, 0.1, 0.0, 0.6, 0.0, 0.0)
+cross_entropy_error(p, y)
+```
+
+
+
+## Numerical Differentiation
+
+```{r}
+numerical_diff <- function(f, x)
+{
+  h <- 1e-4
+  (f(x+h) - f(x-h))/(2*h)
+}
+
+func1 <- function(x) { 0.01*x^2 + 0.1*x }
+x <- seq(0, 20, 0.1)
+y <- func1(x)
+
+library(ggplot2)
+qplot(x, y)
+
+numerical_diff(func1, 5)
+numerical_diff(func1, 10)
+
+g <- qplot(x, y)
+slope <- numerical_diff(func1, 5)
+icept <- func1(5) - slope*5
+g1 <- g + geom_abline(slope=slope, intercept=icept, linetype=2) 
+slope <- numerical_diff(func1, 10)
+icept <- func1(10) - slope*10
+g2 <- g + geom_abline(slope=slope, intercept=icept, linetype=2)
+library(gridExtra)
+grid.arrange(g1, g2, ncol=2)
+```
+
+
+## Gradient
+
+```{r}
+func2 <- function(x) { x[1]^2 + x[2]^2 }
+
+x1 <- seq(-3, 3, 0.5)
+x2 <- seq(-3, 3, 0.5)
+d <- expand.grid(x1=x1, x2=x2)
+d$y <- apply(d, 1, func2)
+z <- matrix(d$y, nrow=length(x1), ncol=length(x2))
+persp(x1, x2, z, theta=30, phi = 40, expand = 0.7, col = "grey", ticktype="detailed")
+```
+
+
+```{r}
+numeric_gradient <- function(f, x)
+{
+  h <- 1e-4
+  if (!is.array(x)) x <- array(x)
+  grad <- array(0, dim=dim(x)) 
+  
+  for (i in seq_along(x))
+  {
+    tmp <- x[i]
+    x[i] <- tmp + h
+    f1 <- f(x)
+    x[i] <- tmp - h
+    f2 <- f(x)
+    grad[i] <- (f1-f2) / (2*h)
+    x[i] <- tmp
+  }
+  grad
+}
+
+numeric_gradient(func2, c(3, 4))
+numeric_gradient(func2, c(0, 2))
+numeric_gradient(func2, c(6, 0))
+
+x1 <- seq(-3, 3, 0.5)
+x2 <- seq(-3, 3, 0.5)
+d <- expand.grid(x1=x1, x2=x2)
+d$y <- apply(d, 1, func2)
+d$d1 <- -2*d$x1
+d$d2 <- -2*d$x2
+
+ggplot(d, aes(x1, x2, xend=x1+d1/20, yend=x2+d2/20)) + 
+  geom_segment(arrow=arrow(length=unit(0.1, "cm")))
+```
+
+## Gradient Descent
+
+```{r}
+gradient_descent <- function(f, init_x, lr=0.1, step_num=100)
+{
+  x <- init_x
+  for (i in 1:step_num)
+  {
+    grad <- numeric_gradient(f, x)
+    x <- x-lr*grad
+  }
+  x
+}
+
+init_x <- c(-3, 4)
+gradient_descent(func2, init_x)
+```
+
+```{r}
+gradient_descent_plot <- function(f, init_x, lr=0.1, step_num=100)
+{
+  x <- init_x
+  out <- x
+  for (i in 1:step_num)
+  {
+    grad <- numeric_gradient(f, x)
+    x <- x-lr*grad
+    out <- rbind(out, x)
+  }
+  dimnames(out) <- NULL
+  out <- as.data.frame(out)
+  names(out) <- c("x1", "x2")
+  
+  x1 <- seq(-5, 5, 0.2)
+  x2 <- seq(-5, 5, 0.2)
+  d <- expand.grid(x1=x1, x2=x2)
+  d$y <- apply(d, 1, f)
+  ggplot(d, aes(x1, x2)) + geom_contour(aes(z=y)) + 
+    geom_point(data=out, aes(x1, x2)) + xlim(c(-5, 5)) + ylim(c(-5, 5))
+}
+
+init_x <- c(-3, 4)
+gradient_descent_plot(func2, init_x)
+gradient_descent_plot(func2, init_x, lr=10)
+gradient_descent_plot(func2, init_x, lr=1e-10)
+```
