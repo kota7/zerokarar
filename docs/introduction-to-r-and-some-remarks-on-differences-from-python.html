@@ -471,10 +471,8 @@ X</code></pre></div>
 <div id="plot" class="section level2">
 <h2><span class="header-section-number">1.15</span> Plot</h2>
 <p>R has various ways to visualize data. In this exercise, we will use <code>ggplot2</code> library.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)</code></pre></div>
-<pre><code>## Find out what&#39;s changed in ggplot2 at
-## http://github.com/tidyverse/ggplot2/releases.</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">6</span>, <span class="fl">0.1</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
+x &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">6</span>, <span class="fl">0.1</span>)
 y &lt;-<span class="st"> </span><span class="kw">sin</span>(x)
 <span class="kw">qplot</span>(x, y, <span class="dt">geom=</span><span class="st">&quot;line&quot;</span>)</code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
