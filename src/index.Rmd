@@ -16,3 +16,5 @@ knitr::opts_chunk$set(echo = TRUE)
 In this book we will implement [Deep Learing from Scratch](https://github.com/oreilly-japan/deep-learning-from-scratch) in R.
 
 This is an inofficial self-study project.
+
+- [GitHub Repository](https://github.com/kota7/zerokarar)
