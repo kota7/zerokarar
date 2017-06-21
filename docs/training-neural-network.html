@@ -140,9 +140,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="4.2" data-path="training-neural-network.html"><a href="training-neural-network.html#numerical-differentiation"><i class="fa fa-check"></i><b>4.2</b> Numerical Differentiation</a></li>
 <li class="chapter" data-level="4.3" data-path="training-neural-network.html"><a href="training-neural-network.html#gradient"><i class="fa fa-check"></i><b>4.3</b> Gradient</a></li>
 <li class="chapter" data-level="4.4" data-path="training-neural-network.html"><a href="training-neural-network.html#gradient-descent"><i class="fa fa-check"></i><b>4.4</b> Gradient Descent</a></li>
-<li class="chapter" data-level="4.5" data-path="training-neural-network.html"><a href="training-neural-network.html#training-with-numerical-gradient"><i class="fa fa-check"></i><b>4.5</b> Training with numerical gradient</a><ul>
-<li class="chapter" data-level="4.5.1" data-path="training-neural-network.html"><a href="training-neural-network.html#mini-batch-training"><i class="fa fa-check"></i><b>4.5.1</b> Mini batch training</a></li>
-</ul></li>
+<li class="chapter" data-level="4.5" data-path="training-neural-network.html"><a href="training-neural-network.html#training-with-numerical-gradient"><i class="fa fa-check"></i><b>4.5</b> Training with numerical gradient</a></li>
 </ul></li>
 </ul>
 
@@ -403,8 +401,6 @@ TwoLayerNet &lt;-<span class="st"> </span><span class="kw">R6Class</span>(
     }
   )
 )</code></pre></div>
-<div id="mini-batch-training" class="section level3">
-<h3><span class="header-section-number">4.5.1</span> Mini batch training</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source</span>(<span class="st">&quot;mnist.R&quot;</span>)
 <span class="kw">library</span>(nnet)
 d &lt;-<span class="st"> </span><span class="kw">load_mnist</span>(<span class="dt">normalize=</span><span class="ot">TRUE</span>, <span class="dt">flatten=</span><span class="ot">TRUE</span>, <span class="dt">one_hot_label=</span><span class="ot">FALSE</span>)
@@ -450,7 +446,7 @@ for (i in <span class="dv">1</span>:iter_nums)
   loss &lt;-<span class="st"> </span>network$<span class="kw">loss</span>(x, y)
   train_loss &lt;-<span class="st"> </span><span class="kw">c</span>(train_loss, loss)
 
-  if (i %%<span class="st"> </span><span class="dv">50</span> ==<span class="st"> </span><span class="dv">1</span>) {
+  if (i %%<span class="st"> </span><span class="dv">50</span> ==<span class="st"> </span><span class="dv">0</span>) {
     train_acc &lt;-<span class="st"> </span><span class="kw">c</span>(train_acc, network$<span class="kw">accuracy</span>(d$train_img, d$train_label))
     test_acc  &lt;-<span class="st"> </span><span class="kw">c</span>(test_acc, network$<span class="kw">accuracy</span>(d$test_img, d$test_label))
     <span class="co">#cat(&quot;\n * test and train accuracy =&quot;, </span>
@@ -461,14 +457,13 @@ for (i in <span class="dv">1</span>:iter_nums)
 <span class="kw">qplot</span>(<span class="dv">1</span>:<span class="kw">length</span>(train_loss), train_loss, <span class="dt">geom=</span><span class="st">&quot;path&quot;</span>) +
 <span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;iter&quot;</span>) +<span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;train loss&quot;</span>)</code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-53-1.png" width="672" /></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">iter &lt;-<span class="st"> </span><span class="dv">1</span> +<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="kw">length</span>(test_acc)-<span class="dv">1</span>)*<span class="dv">50</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">iter &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">1</span>, <span class="kw">length</span>(test_acc))*<span class="dv">50</span>
 tmp &lt;-<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">data.frame</span>(iter, <span class="dt">accuracy=</span>train_acc, <span class="dt">data=</span><span class="st">&quot;train&quot;</span>),
              <span class="kw">data.frame</span>(iter, <span class="dt">accuracy=</span>test_acc, <span class="dt">data=</span><span class="st">&quot;test&quot;</span>))
 <span class="kw">qplot</span>(iter, accuracy, <span class="dt">linetype=</span>data, <span class="dt">data=</span>tmp, <span class="dt">geom=</span><span class="st">&quot;path&quot;</span>) +
 <span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;iter&quot;</span>) +<span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;accuracy&quot;</span>)</code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-53-2.png" width="672" /></p>
 
-</div>
 </div>
 </div>
             </section>

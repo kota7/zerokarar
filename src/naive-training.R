@@ -43,10 +43,10 @@ for (i in 1:iter_nums)
   loss <- network$loss(x, y)
   train_loss <- c(train_loss, loss)
 
-  if (i %% 50 == 1) {
+  if (i %% 50 == 0) {
     train_acc <- c(train_acc, network$accuracy(d$train_img, d$train_label))
     test_acc  <- c(test_acc, network$accuracy(d$test_img, d$test_label))
-    cat("\n * test and train accuracy =", tail(test_acc,1), tail(test_acc,1), "\n")
+    cat("\n * test and train accuracy =", tail(test_acc,1), tail(train_acc,1), "\n")
   }
 }
 

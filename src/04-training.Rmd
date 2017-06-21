@@ -257,7 +257,6 @@ TwoLayerNet <- R6Class(
 ```
 
 
-### Mini batch training
 ```{r, echo=TRUE, eval=FALSE}
 source("mnist.R")
 library(nnet)
@@ -304,7 +303,7 @@ for (i in 1:iter_nums)
   loss <- network$loss(x, y)
   train_loss <- c(train_loss, loss)
 
-  if (i %% 50 == 1) {
+  if (i %% 50 == 0) {
     train_acc <- c(train_acc, network$accuracy(d$train_img, d$train_label))
     test_acc  <- c(test_acc, network$accuracy(d$test_img, d$test_label))
     #cat("\n * test and train accuracy =", 
@@ -325,7 +324,7 @@ library(ggplot2)
 qplot(1:length(train_loss), train_loss, geom="path") +
   xlab("iter") + ylab("train loss")
 
-iter <- 1 + seq(0, length(test_acc)-1)*50
+iter <- seq(1, length(test_acc))*50
 tmp <- rbind(data.frame(iter, accuracy=train_acc, data="train"),
              data.frame(iter, accuracy=test_acc, data="test"))
 qplot(iter, accuracy, linetype=data, data=tmp, geom="path") +
