@@ -9,7 +9,7 @@ Implementation of deep-learning-from-scratch in R
 
 On R, go to "src" directory.  Then,
 
-- Run `bookdown::render_book("index.Rmd")` to compile entire book.
+- Run `bookdown::render_book("index.Rmd")` to compile the entire book.
 - Run `bookdown::preview_chapter("filename.Rmd")` to compile a single chapter.
 
 ## Links
