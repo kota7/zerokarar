@@ -140,6 +140,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="4.2" data-path="training-neural-network.html"><a href="training-neural-network.html#numerical-differentiation"><i class="fa fa-check"></i><b>4.2</b> Numerical Differentiation</a></li>
 <li class="chapter" data-level="4.3" data-path="training-neural-network.html"><a href="training-neural-network.html#gradient"><i class="fa fa-check"></i><b>4.3</b> Gradient</a></li>
 <li class="chapter" data-level="4.4" data-path="training-neural-network.html"><a href="training-neural-network.html#gradient-descent"><i class="fa fa-check"></i><b>4.4</b> Gradient Descent</a></li>
+<li class="chapter" data-level="4.5" data-path="training-neural-network.html"><a href="training-neural-network.html#training-with-numerical-gradient"><i class="fa fa-check"></i><b>4.5</b> Training with numerical gradient</a><ul>
+<li class="chapter" data-level="4.5.1" data-path="training-neural-network.html"><a href="training-neural-network.html#mini-batch-training"><i class="fa fa-check"></i><b>4.5.1</b> Mini batch training</a></li>
+</ul></li>
 </ul></li>
 </ul>
 
@@ -318,7 +321,154 @@ init_x &lt;-<span class="st"> </span><span class="kw">c</span>(-<span class="dv"
 <p><img src="_main_files/figure-html/unnamed-chunk-49-2.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">gradient_descent_plot</span>(func2, init_x, <span class="dt">lr=</span><span class="fl">1e-10</span>)</code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-49-3.png" width="672" /></p>
+</div>
+<div id="training-with-numerical-gradient" class="section level2">
+<h2><span class="header-section-number">4.5</span> Training with numerical gradient</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source</span>(<span class="st">&quot;common-functions.R&quot;</span>)  
 
+<span class="kw">library</span>(R6)
+TwoLayerNet &lt;-<span class="st"> </span><span class="kw">R6Class</span>(
+  <span class="st">&quot;TwoLayerNet&quot;</span>,
+  <span class="dt">public =</span> <span class="kw">list</span>(
+    <span class="dt">params =</span> <span class="kw">list</span>(<span class="dt">W1=</span><span class="ot">NULL</span>, <span class="dt">W2=</span><span class="ot">NULL</span>, <span class="dt">b1=</span><span class="ot">NULL</span>, <span class="dt">b2=</span><span class="ot">NULL</span>),
+    
+    <span class="dt">initialize =</span> function(input_size, hidden_size, 
+                          output_size, <span class="dt">weight_init_std=</span><span class="fl">0.01</span>)
+    {
+      self$params$W1 &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(input_size*hidden_size, <span class="dt">sd=</span>weight_init_std),
+                        <span class="dt">nrow=</span>input_size, <span class="dt">ncol=</span>hidden_size)
+      self$params$W2 &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(hidden_size*output_size, <span class="dt">sd=</span>weight_init_std),
+                        <span class="dt">nrow=</span>hidden_size, <span class="dt">ncol=</span>output_size)
+      self$params$b1 &lt;-<span class="st"> </span><span class="kw">rnorm</span>(hidden_size, <span class="dt">sd=</span>weight_init_std)
+      self$params$b2 &lt;-<span class="st"> </span><span class="kw">rnorm</span>(output_size, <span class="dt">sd=</span>weight_init_std)
+    },
+    
+    
+    <span class="dt">predict =</span> function(x)
+    {
+      <span class="co"># args:  </span>
+      <span class="co">#   x : N*(input_size) matrix</span>
+      <span class="co"># Returns:</span>
+      <span class="co">#   N*(output_size) matrix of predicted probability</span>
+      x &lt;-<span class="st"> </span><span class="kw">t</span>(x)
+      a1 &lt;-<span class="st"> </span><span class="kw">crossprod</span>(self$params$W1, x) +<span class="st"> </span>self$params$b1
+      z1 &lt;-<span class="st"> </span><span class="kw">sigmoid</span>(a1)
+      a2 &lt;-<span class="st"> </span><span class="kw">crossprod</span>(self$params$W2, z1) +<span class="st"> </span>self$params$b2
+      <span class="kw">softmax</span>(<span class="kw">t</span>(a2)) 
+    },
+    
+    <span class="dt">loss =</span> function(x, y)
+    {
+      p &lt;-<span class="st"> </span>self$<span class="kw">predict</span>(x)
+      <span class="kw">cross_entropy_error</span>(p, y)
+    },
+    
+    <span class="dt">accuracy =</span> function(x, y)
+    {
+      p &lt;-<span class="st"> </span><span class="kw">max.col</span>(self$<span class="kw">predict</span>(x))
+      y &lt;-<span class="st"> </span><span class="kw">max.col</span>(y)
+      <span class="kw">mean</span>(p==y)
+    },
+    
+    <span class="dt">.numerical_gradient_each =</span> function(param_name, x, y)
+    {
+      <span class="co"># numerical gradient for a single parameter</span>
+      <span class="co"># </span>
+      <span class="co"># x: N x input_size matrix</span>
+      <span class="co"># y: N x output_size matrix of one-hot label</span>
+      <span class="co"># param_name: character of parameter name</span>
+      h &lt;-<span class="st"> </span><span class="fl">1e-4</span>
+      grad &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">length</span>(self$params[[param_name]]))
+      <span class="kw">dim</span>(grad) &lt;-<span class="st"> </span><span class="kw">dim</span>(self$params[[param_name]])
+      for (i in <span class="kw">seq_along</span>(self$params[[param_name]]))
+      {
+        tmp &lt;-<span class="st"> </span>self$params[[param_name]][i]
+        self$params[[param_name]][i] &lt;-<span class="st"> </span>tmp +<span class="st"> </span>h
+        f1 &lt;-<span class="st"> </span>self$<span class="kw">loss</span>(x, y)
+
+        self$params[[param_name]][i] &lt;-<span class="st"> </span>tmp -<span class="st"> </span>h
+        f2 &lt;-<span class="st"> </span>self$<span class="kw">loss</span>(x, y)
+        
+        grad[i] &lt;-<span class="st"> </span>(f1-f2)/(<span class="dv">2</span>*h) 
+        self$params[[param_name]][i] &lt;-<span class="st"> </span>tmp
+      }
+      grad
+    },
+    
+    <span class="dt">numerical_gradient =</span> function(x, y)
+    {
+      grads &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="kw">names</span>(self$params), self$.numerical_gradient_each, <span class="dt">x=</span>x, <span class="dt">y=</span>y)
+      <span class="kw">names</span>(grads) &lt;-<span class="st"> </span><span class="kw">names</span>(self$params)
+      grads
+    }
+  )
+)</code></pre></div>
+<div id="mini-batch-training" class="section level3">
+<h3><span class="header-section-number">4.5.1</span> Mini batch training</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source</span>(<span class="st">&quot;mnist.R&quot;</span>)
+<span class="kw">library</span>(nnet)
+d &lt;-<span class="st"> </span><span class="kw">load_mnist</span>(<span class="dt">normalize=</span><span class="ot">TRUE</span>, <span class="dt">flatten=</span><span class="ot">TRUE</span>, <span class="dt">one_hot_label=</span><span class="ot">FALSE</span>)
+
+<span class="co"># Simplify the problem to classification of 1, 2, and 3</span>
+<span class="co"># because this naive implementation is slow</span>
+ss &lt;-<span class="st"> </span>d$train_label %in%<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)
+d$train_img &lt;-<span class="st"> </span>d$train_img[ss, , drop=<span class="ot">FALSE</span>]
+d$train_label &lt;-<span class="st"> </span>d$train_label[ss]
+
+ss &lt;-<span class="st"> </span>d$test_label %in%<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)
+d$test_img &lt;-<span class="st"> </span>d$test_img[ss, , drop=<span class="ot">FALSE</span>]
+d$test_label &lt;-<span class="st"> </span>d$test_label[ss]
+
+<span class="co"># to one-hot format</span>
+d$train_label &lt;-<span class="st"> </span><span class="kw">class.ind</span>(d$train_label)
+d$test_label &lt;-<span class="st"> </span><span class="kw">class.ind</span>(d$test_label)
+
+
+iter_nums &lt;-<span class="st"> </span><span class="dv">1000</span>
+train_size &lt;-<span class="st"> </span><span class="kw">dim</span>(d$train_img)[<span class="dv">1</span>]
+batch_size &lt;-<span class="st"> </span><span class="dv">100</span>
+learning_rate &lt;-<span class="st"> </span><span class="fl">0.1</span>
+
+network &lt;-<span class="st"> </span>TwoLayerNet$<span class="kw">new</span>(<span class="dt">input_size=</span><span class="kw">dim</span>(d$train_img)[<span class="dv">2</span>], <span class="dt">output_size=</span><span class="dv">3</span>, <span class="dt">hidden_size=</span><span class="dv">3</span>)
+
+train_loss &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dv">0</span>)
+train_acc &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dv">0</span>)
+test_acc &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dv">0</span>)
+for (i in <span class="dv">1</span>:iter_nums)
+{
+  <span class="co">#cat(sprintf(&quot;\r%4d/%4d&quot;, i, iter_nums))</span>
+  batch_index &lt;-<span class="st"> </span><span class="kw">sample</span>(train_size, batch_size)
+  x &lt;-<span class="st"> </span>d$train_img[batch_index,,drop=<span class="ot">FALSE</span>]
+  y &lt;-<span class="st"> </span>d$train_label[batch_index,,drop=<span class="ot">FALSE</span>]
+
+  grad &lt;-<span class="st"> </span>network$<span class="kw">numerical_gradient</span>(x, y)
+  for (name in <span class="kw">names</span>(network$params))
+  {
+    network$params[[name]] &lt;-<span class="st"> </span>network$params[[name]] -<span class="st"> </span>learning_rate*grad[[name]]
+  }
+
+  loss &lt;-<span class="st"> </span>network$<span class="kw">loss</span>(x, y)
+  train_loss &lt;-<span class="st"> </span><span class="kw">c</span>(train_loss, loss)
+
+  if (i %%<span class="st"> </span><span class="dv">50</span> ==<span class="st"> </span><span class="dv">1</span>) {
+    train_acc &lt;-<span class="st"> </span><span class="kw">c</span>(train_acc, network$<span class="kw">accuracy</span>(d$train_img, d$train_label))
+    test_acc  &lt;-<span class="st"> </span><span class="kw">c</span>(test_acc, network$<span class="kw">accuracy</span>(d$test_img, d$test_label))
+    <span class="co">#cat(&quot;\n * test and train accuracy =&quot;, </span>
+    <span class="co">#    tail(test_acc,1), tail(train_acc,1), &quot;\n&quot;)</span>
+  }
+}</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
+<span class="kw">qplot</span>(<span class="dv">1</span>:<span class="kw">length</span>(train_loss), train_loss, <span class="dt">geom=</span><span class="st">&quot;path&quot;</span>) +
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;iter&quot;</span>) +<span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;train loss&quot;</span>)</code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-53-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">iter &lt;-<span class="st"> </span><span class="dv">1</span> +<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="kw">length</span>(test_acc)-<span class="dv">1</span>)*<span class="dv">50</span>
+tmp &lt;-<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">data.frame</span>(iter, <span class="dt">accuracy=</span>train_acc, <span class="dt">data=</span><span class="st">&quot;train&quot;</span>),
+             <span class="kw">data.frame</span>(iter, <span class="dt">accuracy=</span>test_acc, <span class="dt">data=</span><span class="st">&quot;test&quot;</span>))
+<span class="kw">qplot</span>(iter, accuracy, <span class="dt">linetype=</span>data, <span class="dt">data=</span>tmp, <span class="dt">geom=</span><span class="st">&quot;path&quot;</span>) +
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;iter&quot;</span>) +<span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;accuracy&quot;</span>)</code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-53-2.png" width="672" /></p>
+
+</div>
 </div>
 </div>
             </section>

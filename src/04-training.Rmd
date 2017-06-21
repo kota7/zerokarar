@@ -170,3 +170,164 @@ gradient_descent_plot(func2, init_x)
 gradient_descent_plot(func2, init_x, lr=10)
 gradient_descent_plot(func2, init_x, lr=1e-10)
 ```
+
+
+## Training with numerical gradient
+
+```{r}
+source("common-functions.R")  
+
+library(R6)
+TwoLayerNet <- R6Class(
+  "TwoLayerNet",
+  public = list(
+    params = list(W1=NULL, W2=NULL, b1=NULL, b2=NULL),
+    
+    initialize = function(input_size, hidden_size, 
+                          output_size, weight_init_std=0.01)
+    {
+      self$params$W1 <- matrix(rnorm(input_size*hidden_size, sd=weight_init_std),
+                        nrow=input_size, ncol=hidden_size)
+      self$params$W2 <- matrix(rnorm(hidden_size*output_size, sd=weight_init_std),
+                        nrow=hidden_size, ncol=output_size)
+      self$params$b1 <- rnorm(hidden_size, sd=weight_init_std)
+      self$params$b2 <- rnorm(output_size, sd=weight_init_std)
+    },
+    
+    
+    predict = function(x)
+    {
+      # args:  
+      #   x : N*(input_size) matrix
+      # Returns:
+      #   N*(output_size) matrix of predicted probability
+      x <- t(x)
+      a1 <- crossprod(self$params$W1, x) + self$params$b1
+      z1 <- sigmoid(a1)
+      a2 <- crossprod(self$params$W2, z1) + self$params$b2
+      softmax(t(a2)) 
+    },
+    
+    loss = function(x, y)
+    {
+      p <- self$predict(x)
+      cross_entropy_error(p, y)
+    },
+    
+    accuracy = function(x, y)
+    {
+      p <- max.col(self$predict(x))
+      y <- max.col(y)
+      mean(p==y)
+    },
+    
+    .numerical_gradient_each = function(param_name, x, y)
+    {
+      # numerical gradient for a single parameter
+      # 
+      # x: N x input_size matrix
+      # y: N x output_size matrix of one-hot label
+      # param_name: character of parameter name
+      h <- 1e-4
+      grad <- rep(0, length(self$params[[param_name]]))
+      dim(grad) <- dim(self$params[[param_name]])
+      for (i in seq_along(self$params[[param_name]]))
+      {
+        tmp <- self$params[[param_name]][i]
+        self$params[[param_name]][i] <- tmp + h
+        f1 <- self$loss(x, y)
+
+        self$params[[param_name]][i] <- tmp - h
+        f2 <- self$loss(x, y)
+        
+        grad[i] <- (f1-f2)/(2*h) 
+        self$params[[param_name]][i] <- tmp
+      }
+      grad
+    },
+    
+    numerical_gradient = function(x, y)
+    {
+      grads <- lapply(names(self$params), self$.numerical_gradient_each, x=x, y=y)
+      names(grads) <- names(self$params)
+      grads
+    }
+  )
+)
+```
+
+
+### Mini batch training
+```{r, echo=TRUE, eval=FALSE}
+source("mnist.R")
+library(nnet)
+d <- load_mnist(normalize=TRUE, flatten=TRUE, one_hot_label=FALSE)
+
+# Simplify the problem to classification of 1, 2, and 3
+# because this naive implementation is slow
+ss <- d$train_label %in% c(1, 2, 3)
+d$train_img <- d$train_img[ss, , drop=FALSE]
+d$train_label <- d$train_label[ss]
+
+ss <- d$test_label %in% c(1, 2, 3)
+d$test_img <- d$test_img[ss, , drop=FALSE]
+d$test_label <- d$test_label[ss]
+
+# to one-hot format
+d$train_label <- class.ind(d$train_label)
+d$test_label <- class.ind(d$test_label)
+
+
+iter_nums <- 1000
+train_size <- dim(d$train_img)[1]
+batch_size <- 100
+learning_rate <- 0.1
+
+network <- TwoLayerNet$new(input_size=dim(d$train_img)[2], output_size=3, hidden_size=3)
+
+train_loss <- numeric(0)
+train_acc <- numeric(0)
+test_acc <- numeric(0)
+for (i in 1:iter_nums)
+{
+  #cat(sprintf("\r%4d/%4d", i, iter_nums))
+  batch_index <- sample(train_size, batch_size)
+  x <- d$train_img[batch_index,,drop=FALSE]
+  y <- d$train_label[batch_index,,drop=FALSE]
+
+  grad <- network$numerical_gradient(x, y)
+  for (name in names(network$params))
+  {
+    network$params[[name]] <- network$params[[name]] - learning_rate*grad[[name]]
+  }
+
+  loss <- network$loss(x, y)
+  train_loss <- c(train_loss, loss)
+
+  if (i %% 50 == 1) {
+    train_acc <- c(train_acc, network$accuracy(d$train_img, d$train_label))
+    test_acc  <- c(test_acc, network$accuracy(d$test_img, d$test_label))
+    #cat("\n * test and train accuracy =", 
+    #    tail(test_acc,1), tail(train_acc,1), "\n")
+  }
+}
+```
+
+```{r, include=FALSE}
+tmp <- readRDS("naive-train-result.rds")
+test_acc   <- tmp$test_acc
+train_acc  <- tmp$train_acc
+train_loss <- tmp$train_loss
+```
+
+```{r}
+library(ggplot2)
+qplot(1:length(train_loss), train_loss, geom="path") +
+  xlab("iter") + ylab("train loss")
+
+iter <- 1 + seq(0, length(test_acc)-1)*50
+tmp <- rbind(data.frame(iter, accuracy=train_acc, data="train"),
+             data.frame(iter, accuracy=test_acc, data="test"))
+qplot(iter, accuracy, linetype=data, data=tmp, geom="path") +
+  xlab("iter") + ylab("accuracy")
+```
