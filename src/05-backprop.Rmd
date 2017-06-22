@@ -1,0 +1,155 @@
+# Back Propagation
+
+
+## Computation graphs
+
+
+### Multiplication layer
+```{r}
+library(R6)
+MulLayer <- R6Class(
+  "MulLayer",
+  
+  public = list(
+    x = NULL, y = NULL, # inputs
+    forward = function(x, y)
+    {
+      self$x <- x
+      self$y <- y
+      x*y
+    },
+    backward = function(z) { z*c(self$y, self$x) }
+  )
+)
+```
+
+
+```{r}
+apple_price <- 100
+apple_num   <- 2
+tax_rate    <- 1.1
+
+# layers
+apple_layer <- MulLayer$new()
+tax_layer   <- MulLayer$new()
+
+# forward
+apple_ttl_price <- apple_layer$forward(apple_price, apple_num)
+ttl_price <- tax_layer$forward(apple_ttl_price, tax_rate)
+cat(ttl_price, "\n")
+
+# backward
+dttl_price <- 1
+dtax_layer <- tax_layer$backward(dttl_price)
+dapple_layer <- apple_layer$backward(dtax_layer[1])
+cat(dapple_layer, dtax_layer[2], "\n")
+```
+
+### Addition layer
+
+```{r}
+library(R6)
+AddLayer <- R6Class(
+  "AddLayer",
+  
+  public = list(
+    forward = function(x, y) { x + y },
+    backward = function(z) { rep(z, 2) }
+  )
+)
+```
+
+```{r}
+apple_price <- 100
+apple_num   <- 2
+orange_price <- 150
+orange_num   <- 3
+tax_rate <- 1.1
+
+# layers
+apple_layer  <- MulLayer$new()
+orange_layer <- MulLayer$new()
+basket_layer <- AddLayer$new()
+tax_layer    <- MulLayer$new()
+
+
+# forward
+apple_ttl_price  <- apple_layer$forward(apple_price, apple_num)
+orange_ttl_price <- orange_layer$forward(orange_price, orange_num)
+basket_price     <- basket_layer$forward(apple_ttl_price, orange_ttl_price)
+ttl_price        <- tax_layer$forward(basket_price, tax_rate)
+cat(ttl_price, "\n")
+
+# backward
+dttl <- 1
+dtax <- tax_layer$backward(dttl)
+dbasket <- basket_layer$backward(dtax[1])
+dapple <- apple_layer$backward(dbasket[1])
+dorange <- orange_layer$backward(dbasket[2])
+cat(dapple, dorange, dtax[2], "\n")
+```
+
+
+
+
+## Layers for neural network architecture
+
+### Activation layer
+
+
+```{r}
+ReluLayer <- R6Class(
+  "ReluLayer",
+  public = list(
+    x = NULL,
+    forward = function(x)
+    {
+      self$x = x
+      pmax(0, x)
+    },
+    backward = function(z)
+    {
+      z*as.integer(x>=0)
+    }
+  )
+)
+
+SigmoidLayer <- R6Class(
+  "SigmoidLayer",
+  public = c(
+    out = NULL,
+    forward = function(x) 
+    {
+      o <- 1 / (1+exp(-x)) 
+      self$out <- o
+      o
+    },
+    backward = function(z) { z*(1-self$out)*self$out }
+  )
+)
+```
+
+### Affine layer
+```{r}
+AffineLayer <- R6Class(
+  "AffineLayer",
+  public = list(
+    b = NULL,
+    W = NULL,
+    x = NULL,
+    forward = function() {}
+  )
+)
+```
+
+
+### Softmax layer
+```{r}
+SoftmaxLayer <- R6Class(
+  "SoftmaxLayer",
+  public = list(
+    
+  )
+)
+```
+

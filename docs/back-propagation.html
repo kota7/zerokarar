@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Deep Learning from Scratch in R</title>
+  <meta name="description" content="Deep Learning from Scratch in R">
+  <meta name="generator" content="bookdown 0.4 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Deep Learning from Scratch in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Deep Learning from Scratch in R" />
+  
+  
+  
+
+<meta name="author" content="Kota Mori">
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="training-neural-network.html">
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="introduction-to-r-and-some-remarks-on-differences-from-python.html"><a href="introduction-to-r-and-some-remarks-on-differences-from-python.html"><i class="fa fa-check"></i><b>1</b> Introduction to R, and some remarks on differences from Python</a></li>
+<li class="chapter" data-level="2" data-path="perceptron.html"><a href="perceptron.html"><i class="fa fa-check"></i><b>2</b> Perceptron</a></li>
+<li class="chapter" data-level="3" data-path="neural-network.html"><a href="neural-network.html"><i class="fa fa-check"></i><b>3</b> Neural Network</a></li>
+<li class="chapter" data-level="4" data-path="training-neural-network.html"><a href="training-neural-network.html"><i class="fa fa-check"></i><b>4</b> Training Neural Network</a></li>
+<li class="chapter" data-level="5" data-path="back-propagation.html"><a href="back-propagation.html"><i class="fa fa-check"></i><b>5</b> Back Propagation</a><ul>
+<li class="chapter" data-level="5.1" data-path="back-propagation.html"><a href="back-propagation.html#computation-graphs"><i class="fa fa-check"></i><b>5.1</b> Computation graphs</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="back-propagation.html"><a href="back-propagation.html#multiplication-layer"><i class="fa fa-check"></i><b>5.1.1</b> Multiplication layer</a></li>
+<li class="chapter" data-level="5.1.2" data-path="back-propagation.html"><a href="back-propagation.html#addition-layer"><i class="fa fa-check"></i><b>5.1.2</b> Addition layer</a></li>
+<li class="chapter" data-level="5.1.3" data-path="back-propagation.html"><a href="back-propagation.html#activation-layer"><i class="fa fa-check"></i><b>5.1.3</b> Activation layer</a></li>
+<li class="chapter" data-level="5.1.4" data-path="back-propagation.html"><a href="back-propagation.html#softmax-layer"><i class="fa fa-check"></i><b>5.1.4</b> Softmax layer</a></li>
+</ul></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Deep Learning from Scratch in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="back-propagation" class="section level1">
+<h1><span class="header-section-number">5</span> Back Propagation</h1>
+<div id="computation-graphs" class="section level2">
+<h2><span class="header-section-number">5.1</span> Computation graphs</h2>
+<div id="multiplication-layer" class="section level3">
+<h3><span class="header-section-number">5.1.1</span> Multiplication layer</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(R6)
+MulLayer &lt;-<span class="st"> </span><span class="kw">R6Class</span>(
+  <span class="st">&quot;MulLayer&quot;</span>,
+  
+  <span class="dt">public =</span> <span class="kw">list</span>(
+    <span class="dt">x =</span> <span class="ot">NULL</span>, <span class="dt">y =</span> <span class="ot">NULL</span>, <span class="co"># inputs</span>
+    <span class="dt">forward =</span> function(x, y)
+    {
+      self$x &lt;-<span class="st"> </span>x
+      self$y &lt;-<span class="st"> </span>y
+      x*y
+    },
+    <span class="dt">backward =</span> function(z) { z*<span class="kw">c</span>(self$y, self$x) }
+  )
+)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">apple_price &lt;-<span class="st"> </span><span class="dv">100</span>
+apple_num   &lt;-<span class="st"> </span><span class="dv">2</span>
+tax_rate    &lt;-<span class="st"> </span><span class="fl">1.1</span>
+
+<span class="co"># layers</span>
+apple_layer &lt;-<span class="st"> </span>MulLayer$<span class="kw">new</span>()
+tax_layer   &lt;-<span class="st"> </span>MulLayer$<span class="kw">new</span>()
+
+<span class="co"># forward</span>
+apple_ttl_price &lt;-<span class="st"> </span>apple_layer$<span class="kw">forward</span>(apple_price, apple_num)
+ttl_price &lt;-<span class="st"> </span>tax_layer$<span class="kw">forward</span>(apple_ttl_price, tax_rate)
+<span class="kw">cat</span>(ttl_price, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</code></pre></div>
+<pre><code>## 220</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># backward</span>
+dttl_price &lt;-<span class="st"> </span><span class="dv">1</span>
+dtax_layer &lt;-<span class="st"> </span>tax_layer$<span class="kw">backward</span>(dttl_price)
+dapple_layer &lt;-<span class="st"> </span>apple_layer$<span class="kw">backward</span>(dtax_layer[<span class="dv">1</span>])
+<span class="kw">cat</span>(dapple_layer, dtax_layer[<span class="dv">2</span>], <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</code></pre></div>
+<pre><code>## 2.2 110 200</code></pre>
+</div>
+<div id="addition-layer" class="section level3">
+<h3><span class="header-section-number">5.1.2</span> Addition layer</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(R6)
+AddLayer &lt;-<span class="st"> </span><span class="kw">R6Class</span>(
+  <span class="st">&quot;AddLayer&quot;</span>,
+  
+  <span class="dt">public =</span> <span class="kw">list</span>(
+    <span class="dt">forward =</span> function(x, y) { x +<span class="st"> </span>y },
+    <span class="dt">backward =</span> function(z) { <span class="kw">rep</span>(z, <span class="dv">2</span>) }
+  )
+)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">apple_price &lt;-<span class="st"> </span><span class="dv">100</span>
+apple_num   &lt;-<span class="st"> </span><span class="dv">2</span>
+orange_price &lt;-<span class="st"> </span><span class="dv">150</span>
+orange_num   &lt;-<span class="st"> </span><span class="dv">3</span>
+tax_rate &lt;-<span class="st"> </span><span class="fl">1.1</span>
+
+<span class="co"># layers</span>
+apple_layer  &lt;-<span class="st"> </span>MulLayer$<span class="kw">new</span>()
+orange_layer &lt;-<span class="st"> </span>MulLayer$<span class="kw">new</span>()
+basket_layer &lt;-<span class="st"> </span>AddLayer$<span class="kw">new</span>()
+tax_layer    &lt;-<span class="st"> </span>MulLayer$<span class="kw">new</span>()
+
+
+<span class="co"># forward</span>
+apple_ttl_price  &lt;-<span class="st"> </span>apple_layer$<span class="kw">forward</span>(apple_price, apple_num)
+orange_ttl_price &lt;-<span class="st"> </span>orange_layer$<span class="kw">forward</span>(orange_price, orange_num)
+basket_price     &lt;-<span class="st"> </span>basket_layer$<span class="kw">forward</span>(apple_ttl_price, orange_ttl_price)
+ttl_price        &lt;-<span class="st"> </span>tax_layer$<span class="kw">forward</span>(basket_price, tax_rate)
+<span class="kw">cat</span>(ttl_price, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</code></pre></div>
+<pre><code>## 715</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># backward</span>
+dttl &lt;-<span class="st"> </span><span class="dv">1</span>
+dtax &lt;-<span class="st"> </span>tax_layer$<span class="kw">backward</span>(dttl)
+dbasket &lt;-<span class="st"> </span>basket_layer$<span class="kw">backward</span>(dtax[<span class="dv">1</span>])
+dapple &lt;-<span class="st"> </span>apple_layer$<span class="kw">backward</span>(dbasket[<span class="dv">1</span>])
+dorange &lt;-<span class="st"> </span>orange_layer$<span class="kw">backward</span>(dbasket[<span class="dv">2</span>])
+<span class="kw">cat</span>(dapple, dorange, dtax[<span class="dv">2</span>], <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</code></pre></div>
+<pre><code>## 2.2 110 3.3 165 650</code></pre>
+</div>
+<div id="activation-layer" class="section level3">
+<h3><span class="header-section-number">5.1.3</span> Activation layer</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ReluLayer &lt;-<span class="st"> </span><span class="kw">R6Class</span>(
+  <span class="st">&quot;ReluLayer&quot;</span>,
+  <span class="dt">public =</span> <span class="kw">list</span>(
+    <span class="dt">x =</span> <span class="ot">NULL</span>,
+    <span class="dt">forward =</span> function(x)
+    {
+      self$x =<span class="st"> </span>x
+      <span class="kw">pmax</span>(<span class="dv">0</span>, x)
+    },
+    <span class="dt">backward =</span> function(z)
+    {
+      z*<span class="kw">as.integer</span>(x&gt;=<span class="dv">0</span>)
+    }
+  )
+)
+
+SigmoidLayer &lt;-<span class="st"> </span><span class="kw">R6Class</span>(
+  <span class="st">&quot;SigmoidLayer&quot;</span>,
+  <span class="dt">public =</span> <span class="kw">c</span>(
+    <span class="dt">out =</span> <span class="ot">NULL</span>,
+    <span class="dt">forward =</span> function(x) 
+    {
+      o &lt;-<span class="st"> </span><span class="dv">1</span> /<span class="st"> </span>(<span class="dv">1</span>+<span class="kw">exp</span>(-x)) 
+      self$out &lt;-<span class="st"> </span>o
+      o
+    },
+    <span class="dt">backward =</span> function(z) { z*(<span class="dv">1</span>-self$out)*self$out }
+  )
+)</code></pre></div>
+</div>
+<div id="softmax-layer" class="section level3">
+<h3><span class="header-section-number">5.1.4</span> Softmax layer</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">SoftmaxLayer &lt;-<span class="st"> </span><span class="kw">R6Class</span>(
+  <span class="st">&quot;SoftmaxLayer&quot;</span>,
+  <span class="dt">public =</span> <span class="kw">c</span>(
+    
+  )
+)</code></pre></div>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="training-neural-network.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
