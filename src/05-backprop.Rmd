@@ -94,22 +94,20 @@ cat(dapple, dorange, dtax[2], "\n")
 
 ## Layers for neural network architecture
 
-### Activation layer
+### Activation layers
 
 
 ```{r}
 ReluLayer <- R6Class(
   "ReluLayer",
   public = list(
-    x = NULL,
-    forward = function(x)
-    {
-      self$x = x
-      pmax(0, x)
+    mask = NULL,  
+    forward = function(x) { 
+      self$mask <- (x >= 0)
+      pmax(0, x) 
     },
-    backward = function(z)
-    {
-      z*as.integer(x>=0)
+    backward = function(z) { 
+      z*mask 
     }
   )
 )
@@ -118,13 +116,14 @@ SigmoidLayer <- R6Class(
   "SigmoidLayer",
   public = c(
     out = NULL,
-    forward = function(x) 
-    {
+    forward = function(x) {
       o <- 1 / (1+exp(-x)) 
       self$out <- o
       o
     },
-    backward = function(z) { z*(1-self$out)*self$out }
+    backward = function(z) { 
+      z*(1-self$out)*self$out 
+    }
   )
 )
 ```
@@ -137,7 +136,19 @@ AffineLayer <- R6Class(
     b = NULL,
     W = NULL,
     x = NULL,
-    forward = function() {}
+    
+    initialize = function(b., W.) {
+      self$b <- b.
+      self$W <- W.
+    },
+    
+    forward = function(x) {
+      crossprod(x, self$W)
+    },
+    
+    backward = function(z) {
+      
+    }
   )
 )
 ```
